@@ -3,15 +3,15 @@ const http = require('http')
 const chalk = require('chalk')
 // 配置单独放一个文件
 const conf = require('./config/defaultConf')
-// 判断是不是文件
-const fs = require('fs')
+// 将回调写进别的文件
+const route = require('./helper/route')
 // 用户访问的地址变成服务器上的路径
 const path = require('path')
-
 const server = http.createServer((req, res) => {
   const filePath = path.join(conf.root, req.url)
+  route(res, req, filePath)
   // 一般用stat判断文件是不是存在
-  fs.stat(filePath, (err, stats) => {
+  /* fs.stat(filePath, (err, stats) => {
     if (err) {
       res.statusCode = 404
       res.setHeader('Content-type', 'text-plain')
@@ -36,7 +36,7 @@ const server = http.createServer((req, res) => {
       })
     }
 
-  })
+  }) */
 })
 
 server.listen(conf.port, conf.hostname,()=>{
