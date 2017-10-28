@@ -57,3 +57,13 @@ typings/
 # dotenv environment variables file
 .env
 
+
+
+logs
+*.log
+npm-debug.log*
+node_modules/
+*.swp
+.idea/
+.DS_Store
+build/
