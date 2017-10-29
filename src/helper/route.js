@@ -1,3 +1,9 @@
+// 模板引擎
+const Handlebars = require('handlebars')
+// 文件中尽可能避开相对路径,因为不同系统的路径分隔符不同,所以使用绝对路径
+const path = require('path')
+// 需要知道root
+const config = require('../config/defaultConf')
 // 判断是不是文件
 const fs = require('fs')
 
@@ -6,6 +12,15 @@ const promisify = require('util').promisify
 // 将异步变成promise
 const readdir = promisify(fs.readdir)
 const stat = promisify(fs.stat)
+// 文件中尽可能避开相对路径,因为不同系统的路径分隔符不同,所以使用绝对路径
+const tplPath = path.join(__dirname,'../template/dir.tpl')
+// const source = fs.readFileSync('../template/dir.tpl')
+// 这里用同步是因为 必须等待这个结果 只执行一次
+const source = fs.readFileSync(tplPath)
+// 使用模板编译 这边默认读出来的是buffer
+const template = Handlebars.compile(source.toString())
+// 得到正确的mime类型
+const mime = require('./mime')
 // await 只能在async函数里面使用
 module.exports = async function (res, req, filePath) {
 // 一般用stat判断文件是不是存在
@@ -15,8 +30,9 @@ module.exports = async function (res, req, filePath) {
   try{
     const stats = await stat(filePath)
     if (stats.isFile()) {
+      const contentType = mime(filePath)
       res.statusCode = 200
-      res.setHeader('Content-type','text-plain')
+      res.setHeader('Content-type',contentType)
       // 直接用流 流进res即可
       fs.createReadStream(filePath).pipe(res)
       return
@@ -24,10 +40,27 @@ module.exports = async function (res, req, filePath) {
     if (stats.isDirectory()) {
         const files = await readdir(filePath)
         res.statusCode = 200
-        res.setHeader('Content-type', 'text-plain')
-        console.log(files)
+        res.setHeader('Content-type', 'text/html')
+        const dir = path.relative(config.root,filePath)
+        const data = {
+          title: path.basename(filePath),
+          // dir始终要相对于根目录  path.relative如果本身就是根目录那么返回为空字符串
+          dir: dir ? `/${dir}` : '',
+          files: files.map(file => {
+            return {
+              file,
+              // 得到相应的文件小图片
+              icon: mime(file)
+            }
+          })
+        }
+        // console.log(files)
         // 将文件名串起来
-        res.end(files.join(', '))
+        res.end(template(data))
+        // path = url.path + '/' + file
+
+
+
       // files是文件名的数组
     /*   fs.readdir(filePath, (err,files)=>{
         res.statusCode = 200
@@ -40,6 +73,7 @@ module.exports = async function (res, req, filePath) {
   }catch(ex){
     res.statusCode = 404
     res.setHeader('Content-type', 'text-plain')
-    res.end(`${filePath} is not a directory or file.`)
+    // 开发环境可以打印错误信息 但是线上是不可以显示的  所以这里一般需要判断
+    res.end(`${filePath} is not a directory or file.\n ${ex.toString()}`)
   }
 }
