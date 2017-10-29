@@ -9,7 +9,7 @@ const route = require('./helper/route')
 const path = require('path')
 const server = http.createServer((req, res) => {
   const filePath = path.join(conf.root, req.url)
-  route(res, req, filePath)
+  route(req, res, filePath)
   // 一般用stat判断文件是不是存在
   /* fs.stat(filePath, (err, stats) => {
     if (err) {

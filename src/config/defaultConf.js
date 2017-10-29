@@ -3,5 +3,7 @@ module.exports = {
   // 也就是我可能在上一层文件夹执行命令,也可能在上上层文件夹执行命令
   root: process.cwd(),
   hostname: '127.0.0.1',
-  port: 9527
+  port: 9527,
+  // 需要压缩的格式
+  compress: /\.(html|js|css|md)/
 }

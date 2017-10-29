@@ -21,8 +21,10 @@ const source = fs.readFileSync(tplPath)
 const template = Handlebars.compile(source.toString())
 // 得到正确的mime类型
 const mime = require('./mime')
+// 压缩文件
+const compress = require('./compress')
 // await 只能在async函数里面使用
-module.exports = async function (res, req, filePath) {
+module.exports = async function (req, res, filePath) {
 // 一般用stat判断文件是不是存在
 // 解决回调地狱
 // aync包装try catch
@@ -34,7 +36,12 @@ module.exports = async function (res, req, filePath) {
       res.statusCode = 200
       res.setHeader('Content-type',contentType)
       // 直接用流 流进res即可
-      fs.createReadStream(filePath).pipe(res)
+      // fs.createReadStream(filePath).pipe(res)
+      let rs = fs.createReadStream(filePath)
+      if(filePath.match(config.compress)){
+        rs = compress(rs, req, res)
+      }
+      rs.pipe(res)
       return
     }
     if (stats.isDirectory()) {
