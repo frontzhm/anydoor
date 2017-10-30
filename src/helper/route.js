@@ -23,6 +23,8 @@ const template = Handlebars.compile(source.toString())
 const mime = require('./mime')
 // 压缩文件
 const compress = require('./compress')
+// 请求文件的范围 
+const range = require('./range')
 // await 只能在async函数里面使用
 module.exports = async function (req, res, filePath) {
 // 一般用stat判断文件是不是存在
@@ -33,11 +35,21 @@ module.exports = async function (req, res, filePath) {
     const stats = await stat(filePath)
     if (stats.isFile()) {
       const contentType = mime(filePath)
-      res.statusCode = 200
       res.setHeader('Content-type',contentType)
+      let rs
+      const {code, start, end} = range(stats.size, req, res)
       // 直接用流 流进res即可
+      if (code === 200 ) {
+        res.statusCode = 200
+        // fs.createReadStream(filePath).pipe(res)
+        rs = fs.createReadStream(filePath)
+      }else{
+        res.statusCode = 206
+        // 也就是部分内容
+        rs = fs.createReadStream(filePath, {start,end})
+      }
       // fs.createReadStream(filePath).pipe(res)
-      let rs = fs.createReadStream(filePath)
+      // let rs = fs.createReadStream(filePath)
       if(filePath.match(config.compress)){
         rs = compress(rs, req, res)
       }
