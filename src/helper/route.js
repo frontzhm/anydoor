@@ -25,6 +25,8 @@ const mime = require('./mime')
 const compress = require('./compress')
 // 请求文件的范围 
 const range = require('./range')
+// 缓存
+const isFresh = require('./cache')
 // await 只能在async函数里面使用
 module.exports = async function (req, res, filePath) {
 // 一般用stat判断文件是不是存在
@@ -36,6 +38,13 @@ module.exports = async function (req, res, filePath) {
     if (stats.isFile()) {
       const contentType = mime(filePath)
       res.setHeader('Content-type',contentType)
+      // 先判断可不可以用缓存 可以的话直接用缓存 且304
+      console.log(isFresh(stats, req, res))
+      if(isFresh(stats, req, res)){
+        res.statusCode = 304
+        res.end()
+        return
+      }
       let rs
       const {code, start, end} = range(stats.size, req, res)
       // 直接用流 流进res即可

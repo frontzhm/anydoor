@@ -5,5 +5,14 @@ module.exports = {
   hostname: '127.0.0.1',
   port: 9527,
   // 需要压缩的格式
-  compress: /\.(html|js|css|md)/
+  compress: /\.(html|js|css|md)/,
+  // 缓存配置
+  cache: {
+    // 单位是s
+    maxAge: 6000000,
+    expires: true,
+    cacheControl: true,
+    lastModified: true,
+    etag: true
+  }
 }
