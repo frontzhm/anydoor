@@ -7,6 +7,9 @@ const conf = require('./config/defaultConf')
 const route = require('./helper/route')
 // 用户访问的地址变成服务器上的路径
 const path = require('path')
+// 自动打开浏览器
+const openURL = require('./helper/openURL')
+
 // 定义一个Server的类 注意原先使用conf的地方统一变成this.conf
 class Server {
   constructor (config) {
@@ -49,6 +52,8 @@ class Server {
     server.listen(this.conf.port, this.conf.hostname,()=>{
       const addr = `http://${this.conf.hostname}:${this.conf.port}`
       console.info(`Server started at ${chalk.green(addr)}`)
+      // 尝试自动打开浏览器
+      openURL(addr)
     })
     
   }

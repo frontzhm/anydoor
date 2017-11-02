@@ -1,2 +1,5 @@
-src
+# src 这里src可以执行不需要构建
 test
+.editorconfig
+.eslintignore
+.eslint.js
