@@ -1,10 +1,8 @@
 {
-  "name": "anydoor",
+  "name": "anydoortest",
   "version": "0.1.1",
   "description": "Tiny nodejs static web server",
-  // 这样require的时候就会是app.js
   "main": "src/app.js",
-  // 推到npm上的时候 自动加到系统的path
   "bin": {
     "anydoor": "bin/anydoor"
   },
