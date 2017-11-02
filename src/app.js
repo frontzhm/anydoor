@@ -51,6 +51,7 @@ class Server {
     
     server.listen(this.conf.port, this.conf.hostname,()=>{
       const addr = `http://${this.conf.hostname}:${this.conf.port}`
+      // eslint-disable-next-line
       console.info(`Server started at ${chalk.green(addr)}`)
       // 尝试自动打开浏览器
       openURL(addr)

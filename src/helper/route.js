@@ -40,7 +40,6 @@ module.exports = async function (req, res, filePath, config) {
       const contentType = mime(filePath)
       res.setHeader('Content-type',contentType)
       // 先判断可不可以用缓存 可以的话直接用缓存 且304
-      console.log(isFresh(stats, req, res))
       if(isFresh(stats, req, res)){
         res.statusCode = 304
         res.end()
