@@ -3,7 +3,6 @@ const {createGzip, createDeflate} = require('zlib')
 // rs readstream  知道客户端的压缩类型  告诉客户端的压缩类型
 module.exports = (rs, req, res) => {
     const acceptEncoding = req.headers['accept-encoding']
-    console.log(acceptEncoding)
     // 不支持gzip5 所以写死 \b单词边界
     if(!acceptEncoding || !acceptEncoding.match(/\b(gzip|deflate)\b/)){
         return rs

@@ -2,8 +2,9 @@
 const Handlebars = require('handlebars')
 // 文件中尽可能避开相对路径,因为不同系统的路径分隔符不同,所以使用绝对路径
 const path = require('path')
-// 需要知道root
-const config = require('../config/defaultConf')
+// 需要知道root 
+// 用户自定义的时候 就不用这个了
+// const config = require('../config/defaultConf')
 // 判断是不是文件
 const fs = require('fs')
 
@@ -28,7 +29,7 @@ const range = require('./range')
 // 缓存
 const isFresh = require('./cache')
 // await 只能在async函数里面使用
-module.exports = async function (req, res, filePath) {
+module.exports = async function (req, res, filePath, config) {
 // 一般用stat判断文件是不是存在
 // 解决回调地狱
 // aync包装try catch

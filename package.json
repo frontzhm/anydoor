@@ -1,0 +1,44 @@
+{
+  "name": "anydoor",
+  "version": "0.1.1",
+  "description": "Tiny nodejs static web server",
+  // 这样require的时候就会是app.js
+  "main": "src/app.js",
+  // 推到npm上的时候 自动加到系统的path
+  "bin": {
+    "anydoor": "bin/anydoor"
+  },
+  "scripts": {
+    "lint": "eslint .",
+    "fix": "eslint --fix",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "pre-commit": [
+    "fix",
+    "lint"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/frontzhm/anydoor.git"
+  },
+  "keywords": [
+    "static",
+    "webserver"
+  ],
+  "author": "zhm",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/frontzhm/anydoor/issues"
+  },
+  "homepage": "https://github.com/frontzhm/anydoor#readme",
+  "devDependencies": {
+    "babel-eslint": "^7.2.3",
+    "eslint": "^4.5.0",
+    "pre-commit": "^1.2.2"
+  },
+  "dependencies": {
+    "chalk": "^2.1.0",
+    "handlebars": "^4.0.10",
+    "yargs": "^8.0.2"
+  }
+}
